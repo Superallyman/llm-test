@@ -1,90 +1,134 @@
-import logo from './logo.svg';
-import './App.css';
-import React, { useState} from "react";
-import { LangChain } from "langchain";
-import { OpenAI } from "langchain/llms/openai";
-
-import ReactDOM from 'react-dom';
-import {Editor, EditorState} from 'draft-js';
-
-
+import React, { useState, useEffect } from 'react';
 
 function App() {
-  const [AIMessage, setAIMessage] = useState("you haven't clicked on the page yet");
+  const [Answer, setAnswer] = useState(0);
+  const [RSR, setRSR] = useState(1);
+  const [RSO, setRSO] = useState(1);
+  const [LSO, setLSO] = useState(1);
+  const [LSR, setLSR] = useState(1);
+  const [RIR, setRIR] = useState(1);
+  const [RIO, setRIO] = useState(1);
+  const [LIO, setLIO] = useState(1);
+  const [LIR, setLIR] = useState(1);
+  const [count, setCount] = useState(0);
 
+  function parks3Step(input) {
+    if (count === 0) {
+      console.log("count is zero");
+    }
 
-  async function myFunction() {
-    const model = new OpenAI({ openAIApiKey: "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", temperature: 0.9 });
-    console.log(model)
-    let x = "Regarding the following input, create a useable .json file with categories based on ocular anatomy; "
+    if (input === 'Right') {
+      console.log('you said right eye is more hyper in primary gaze');
+      setRSR(0);
+      setRIO(0);
+      setLSO(0);
+      setLIR(0);
+    }
 
-//     Please provide a comprehensive report of the patient's ocular anatomy. Include any abnormalities, diseases, or conditions that are relevant to their ocular health.
+    if (input === 'Left') {
+      setRSO(0);
+      setRIR(0);
+      setLSR(0);
+      setLIO(0);
+    }
 
-// The report should cover the following anatomical structures:
+    if (input === 'Right Gaze') {
+      setRSO(0);
+      setRIO(0);
+      setLSR(0);
+      setLIR(0);
+    }
 
-// Cornea
-// Iris
-// Lens
-// Retina
-// Optic Nerve
-// For each structure, please provide the following information:
+    if (input === 'Left Gaze') {
+      setRSR(0);
+      setRIR(0);
+      setLSR(0);
+      setLIO(0);
+    }
 
-// General appearance
-// Any relevant measurements (e.g. corneal thickness, lens power)
-// Any abnormalities, diseases, or conditions
-// Treatment plans (if applicable)
-// Please format your report as a JSON string, with each structure as a separate object and the relevant information as key-value pairs within each object. The overall JSON object should be an array of the individual structure objects.
+    if (input === 'Right Head Tilt') {
+      setRIO(0);
+      setRIR(0);
+      setLSR(0);
+      setLSO(0);
+    }
 
-// For example:
-// [
-// {
-// "Structure": "Cornea",
-// "General Appearance": "Clear and smooth",
-// "Thickness": "560 microns",
-// "Abnormalities": [
-// {
-// "Name": "Keratoconus",
-// "Severity": "Mild",
-// "Treatment": "Topical eye drops"
-// }
-// ]
-// },
-// {
-// "Structure": "Iris",
-// "General Appearance": "Brown with no abnormalities",
-// "Pupil Size": "3mm",
-// "Abnormalities": []
-// },
-// // ...and so on for each structure
-// ]
-    let userquestion = "Left Cornea is clear, right retina is healthy"
-    let prompt = x + userquestion
-  
-    const res = await model.call(
-        prompt
-      );
-    console.log("response: " + res);
-    setAIMessage(res)
+    if (input === 'Left Head Tilt') {
+      setRSR(0);
+      setRSO(0);
+      setLIO(0);
+      setLIR(0);
+    }
+
+    setCount(1); // Update count state
+
+    // Rest of your code
+
 
   }
 
+  useEffect(() => {
+    let sum = RSR + RSO + LSO + LSR + RIR + RIO + LIO + LIR;
+    setAnswer(sum);
+    if(sum ===1){
+      if(RSR === 1){
+        console.log('RSR')
+        setAnswer('RSR')
+      }
+      if(RSO === 1){
+        console.log('RSO')
+        setAnswer('RSO')
+      }
+      if(LSO === 1){
+        console.log('LSO')
+        setAnswer('LSO')
+      }
+      if(LSR === 1){
+        console.log('LSR')
+        setAnswer('LSR')
+      }
+      if(RIR === 1){
+        console.log('RIR')
+        setAnswer('RIR')
+      }
+      if(RIO === 1){
+        console.log('RIO')
+        setAnswer('RIO')
+      }
+      if(LIO === 1){
+        console.log('LIO')
+        setAnswer('LIO')
+      }
+      if(LIR === 1){
+        console.log('LIR')
+        setAnswer('LIR')
+      }
+  }
+  }, [RSR, RSO, LSO, LSR, RIR, RIO, LIO, LIR]);
   return (
     <div className="App">
-      <header onClick={myFunction}  className="App-header">
-        <h1>Here is the response: {AIMessage}</h1>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <h1>Isolated Muscle: {Answer}</h1>
+        <p>Which eye is hyper deviated in primary gaze?</p>
+        <div>
+        <input type="radio" name="primaryGaze" value="Right"onChange={() => parks3Step('Right')}/>Right
+        <input type="radio" name="primaryGaze" value="Left"onChange={() => parks3Step('Left')}/>Left
+        </div>
+        <div>
+        <input type="radio" name="sideGaze" value="Right Gaze"onChange={() => parks3Step('Right Gaze')}/>Right Gaze
+        <input type="radio" name="sideGaze" value="Left Gaze"onChange={() => parks3Step('Left Gaze')}/>Left Gaze
+        </div>
+        <div>
+        <input type="radio" name="headTilt" value="Right Head Tilt"onChange={() => parks3Step('Right Head Tilt')}/>Right Head Tilt
+        <input type="radio" name="headTilt" value="Left Head Tilt"onChange={() => parks3Step('Left Head Tilt')}/>Left Head Tilt
+        </div>
+      <button onClick={() => parks3Step('Right')}>Right</button>
+      <button onClick={() => parks3Step('Left')}>Left</button>
+        <p>Is the vertical deviation greater in right gaze or left gaze?</p>
+      <button onClick={() => parks3Step('Right Gaze')}>Right Gaze</button>
+      <button onClick={() => parks3Step('Left Gaze')}>Left Gaze</button>
+        <p>Is the vertical deviation greater with right head tilt or left head tilt?</p>
+      <button onClick={() => parks3Step('Right Head Tilt')}>Right Head Tilt</button>
+      <button onClick={() => parks3Step('Left Head Tilt')}>Left Head Tilt</button>
     </div>
   );
 }
